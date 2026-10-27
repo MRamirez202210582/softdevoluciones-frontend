@@ -1,0 +1,54 @@
+<section>
+  <div class="heading">
+    <div>
+      <h1>Mis devoluciones</h1>
+      <p>Consulta el estado de tus solicitudes.</p>
+    </div>
+
+    <a routerLink="/client/returns/new" class="button">
+      Nueva devolución
+    </a>
+  </div>
+
+  @if (cargando) {
+    <p>Cargando devoluciones...</p>
+  }
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <div class="return-list">
+    @for (devolucion of devoluciones; track devolucion.id) {
+      <article class="return-card">
+        <div class="top">
+          <h2>Devolución #{{ devolucion.id }}</h2>
+          <span
+            class="status"
+            [class.approved]="devolucion.estado === 'APROBADA' || devolucion.estado === 'COMPLETADA'"
+            [class.rejected]="devolucion.estado === 'RECHAZADA'"
+          >
+            {{ devolucion.estado }}
+          </span>
+        </div>
+
+        <p><strong>Pedido:</strong> #{{ devolucion.compraId }}</p>
+        <p><strong>Fecha:</strong> {{ devolucion.fechaSolicitud | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Motivo:</strong> {{ devolucion.motivo }}</p>
+        <p><strong>Comentario:</strong> {{ devolucion.comentario }}</p>
+        <p><strong>Importe:</strong> {{ devolucion.importe | currency:'PEN' }}</p>
+
+        @if (devolucion.observacionOperador) {
+          <div class="observation">
+            <strong>Observación del operador:</strong>
+            {{ devolucion.observacionOperador }}
+          </div>
+        }
+      </article>
+    } @empty {
+      @if (!cargando && !error) {
+        <p>No tienes solicitudes registradas.</p>
+      }
+    }
+  </div>
+</section>

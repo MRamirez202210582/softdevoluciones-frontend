@@ -1,0 +1,59 @@
+.return-page {
+  max-width: 850px;
+}
+
+.subtitle {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.form-card {
+  background: white;
+  padding: 30px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 18px 0 8px;
+}
+
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  margin-top: 25px;
+  padding: 13px 22px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+}
+
+.error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 18px;
+}

@@ -1,0 +1,85 @@
+
+<aside class="sidebar">
+
+  <div class="menu-title">
+    MENÚ PRINCIPAL
+  </div>
+
+  <!-- CLIENTE -->
+
+  @if (auth.usuario()?.rol === 'CLIENTE') {
+
+    <a
+      routerLink="/client/cart"
+      routerLinkActive="active"
+    >
+      Mi carrito
+    </a>
+
+
+    <a
+      routerLink="/client/dashboard"
+      routerLinkActive="active"
+    >
+      Inicio
+    </a>
+
+    <a
+      routerLink="/client/products"
+      routerLinkActive="active"
+    >
+      Productos
+    </a>
+
+    <a
+      routerLink="/client/orders"
+      routerLinkActive="active"
+    >
+      Mis pedidos
+    </a>
+
+    <a
+      routerLink="/client/returns/new"
+      routerLinkActive="active"
+    >
+      Solicitar devolución
+    </a>
+
+    <a
+      routerLink="/client/returns"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Mis devoluciones
+    </a>
+
+  }
+
+  <!-- OPERADOR -->
+
+  @if (auth.usuario()?.rol === 'OPERADOR') {
+
+    <a
+      routerLink="/operator/returns"
+      routerLinkActive="active"
+    >
+      Gestionar devoluciones
+    </a>
+
+  }
+
+
+  <!-- ADMINISTRADOR -->
+
+  @if (auth.usuario()?.rol === 'ADMIN') {
+
+    <a
+      routerLink="/admin/dashboard"
+      routerLinkActive="active"
+    >
+      Panel administrativo
+    </a>
+
+  }
+
+</aside>

@@ -1,0 +1,73 @@
+
+<section class="admin-orders">
+
+  <div class="page-header">
+    <div>
+      <a routerLink="/admin/dashboard" class="back-link">
+        ← Volver al panel administrativo
+      </a>
+
+      <h1>Consulta global de pedidos</h1>
+      <p>Supervisa todas las compras registradas en el sistema.</p>
+    </div>
+
+    <button
+      type="button"
+      [disabled]="cargando"
+      (click)="cargarPedidos()">
+      Actualizar
+    </button>
+  </div>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  <div class="summary">
+    <strong>{{ pedidos.length }}</strong>
+    <span>Pedidos registrados</span>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+      <tr>
+        <th>Pedido</th>
+        <th>Cliente</th>
+        <th>Fecha</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Productos</th>
+      </tr>
+      </thead>
+
+      <tbody>
+        @for (pedido of pedidos; track pedido.id) {
+          <tr>
+            <td>#{{ pedido.id }}</td>
+            <td>{{ pedido.clienteNombre }}</td>
+            <td>{{ pedido.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ pedido.total | currency:'PEN' }}</td>
+            <td>
+              <span class="estado">{{ pedido.estado }}</span>
+            </td>
+            <td>
+              @for (detalle of pedido.detalles; track $index) {
+                <div class="producto">
+                  {{ detalle.nombreProducto }}
+                  × {{ detalle.cantidad }}
+                </div>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty">
+              {{ cargando ? 'Cargando pedidos...' : 'No hay pedidos registrados.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

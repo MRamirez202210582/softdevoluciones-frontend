@@ -1,0 +1,422 @@
+<section class="returns-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Gestión de devoluciones</h1>
+
+      <p class="subtitle">
+        Revisa, evalúa y procesa las solicitudes de devolución
+        registradas por los clientes.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="actualizar()"
+      [disabled]="cargando || procesandoId !== null"
+    >
+      Actualizar solicitudes
+    </button>
+  </div>
+
+  <!-- RESUMEN -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+      <span>Total cargadas</span>
+      <strong>{{ devoluciones.length }}</strong>
+    </div>
+
+    <div class="summary-card pending">
+      <span>Solicitadas</span>
+      <strong>{{ solicitudesPendientes }}</strong>
+    </div>
+
+    <div class="summary-card review-summary">
+      <span>En revisión</span>
+      <strong>{{ solicitudesEnRevision }}</strong>
+    </div>
+
+    <div class="summary-card approved">
+      <span>Aprobadas</span>
+      <strong>{{ solicitudesAprobadas }}</strong>
+    </div>
+
+    <div class="summary-card completed">
+      <span>Completadas</span>
+      <strong>{{ solicitudesCompletadas }}</strong>
+    </div>
+
+    <div class="summary-card rejected">
+      <span>Rechazadas</span>
+      <strong>{{ solicitudesRechazadas }}</strong>
+    </div>
+
+  </div>
+
+  <!-- FILTROS -->
+
+  <div class="filters-panel">
+
+    <div class="filters-heading">
+      <h2>Buscar solicitudes</h2>
+
+      <button
+        type="button"
+        class="clear-button"
+        (click)="limpiarFiltros()"
+      >
+        Limpiar filtros
+      </button>
+    </div>
+
+    <div class="filters-grid">
+
+      <div class="filter-field">
+        <label for="busqueda">Buscar</label>
+
+        <input
+          id="busqueda"
+          type="text"
+          name="busqueda"
+          [(ngModel)]="busqueda"
+          placeholder="Solicitud, pedido o cliente"
+        >
+      </div>
+
+      <div class="filter-field">
+        <label for="estado">Estado</label>
+
+        <select
+          id="estado"
+          name="estado"
+          [(ngModel)]="filtroEstado"
+        >
+          <option value="">Todos los estados</option>
+
+          @for (estado of estados; track estado) {
+            <option [value]="estado">
+              {{ formatearEstado(estado) }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="motivo">Motivo</label>
+
+        <select
+          id="motivo"
+          name="motivo"
+          [(ngModel)]="filtroMotivo"
+        >
+          <option value="">Todos los motivos</option>
+
+          @for (motivo of motivosDisponibles; track motivo) {
+            <option [value]="motivo">
+              {{ formatearEstado(motivo) }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="fechaDesde">Desde</label>
+
+        <input
+          id="fechaDesde"
+          type="date"
+          name="fechaDesde"
+          [(ngModel)]="filtroDesde"
+        >
+      </div>
+
+      <div class="filter-field">
+        <label for="fechaHasta">Hasta</label>
+
+        <input
+          id="fechaHasta"
+          type="date"
+          name="fechaHasta"
+          [(ngModel)]="filtroHasta"
+        >
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MENSAJES -->
+
+  @if (error) {
+    <div class="alert error">
+      {{ error }}
+    </div>
+  }
+
+  @if (mensaje) {
+    <div class="alert success">
+      {{ mensaje }}
+    </div>
+  }
+
+  <!-- LISTADO -->
+
+  <div class="list-header">
+
+    <h2>Solicitudes registradas</h2>
+
+    <span class="results-count">
+      {{ devolucionesFiltradas.length }}
+      resultados en la página cargada
+    </span>
+
+  </div>
+
+  @if (cargando) {
+    <div class="empty-state">
+      Cargando solicitudes...
+    </div>
+  } @else {
+
+    <div class="return-list">
+
+      @for (devolucion of devolucionesFiltradas; track devolucion.id) {
+
+        <article class="return-card">
+
+          <div class="card-heading">
+
+            <div>
+              <h3>
+                Solicitud #{{ devolucion.id }}
+              </h3>
+
+              <p class="request-meta">
+                Pedido #{{ devolucion.compraId }}
+                ·
+                {{ devolucion.fechaSolicitud | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+            </div>
+
+            <span
+              class="status"
+              [class.status-pending]="devolucion.estado === 'SOLICITADA'"
+              [class.status-review]="devolucion.estado === 'EN_REVISION'"
+              [class.status-approved]="devolucion.estado === 'APROBADA'"
+              [class.status-rejected]="devolucion.estado === 'RECHAZADA'"
+              [class.status-completed]="devolucion.estado === 'COMPLETADA'"
+            >
+              {{ formatearEstado(devolucion.estado) }}
+            </span>
+
+          </div>
+
+          <!-- DATOS -->
+
+          <div class="request-info">
+
+            <div>
+              <span>Cliente</span>
+              <strong>#{{ devolucion.usuarioId }}</strong>
+            </div>
+
+            <div>
+              <span>Pedido</span>
+              <strong>#{{ devolucion.compraId }}</strong>
+            </div>
+
+            <div>
+              <span>Motivo</span>
+              <strong>
+                {{ formatearEstado(devolucion.motivo) }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Importe solicitado</span>
+              <strong class="amount">
+                {{ devolucion.importe | currency:'PEN' }}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="comment-box">
+            <strong>Comentario del cliente</strong>
+
+            <p>
+              {{ devolucion.comentario || 'Sin comentario.' }}
+            </p>
+          </div>
+
+          <!-- PRODUCTOS -->
+
+          <div class="products-section">
+
+            <h4>Detalle de productos</h4>
+
+            @if (devolucion.detalles && devolucion.detalles.length > 0) {
+
+              <div class="table-wrapper">
+
+                <table>
+                  <thead>
+                  <tr>
+                    <th>Detalle de compra</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Importe</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+
+                    @for (detalle of devolucion.detalles; track detalle.id) {
+
+                      <tr>
+                        <td>#{{ detalle.detalleCompraId }}</td>
+
+                        <td>{{ detalle.cantidad }}</td>
+
+                        <td>
+                          {{ detalle.precioUnitario | currency:'PEN' }}
+                        </td>
+
+                        <td>
+                          {{ detalle.importe | currency:'PEN' }}
+                        </td>
+                      </tr>
+
+                    }
+
+                  </tbody>
+                </table>
+
+              </div>
+
+            } @else {
+              <p class="muted">
+                No hay detalles disponibles.
+              </p>
+            }
+
+          </div>
+
+          <!-- OBSERVACIÓN -->
+
+          <div class="observation-section">
+
+            <label [for]="'observacion-' + devolucion.id">
+              Observación del operador
+            </label>
+
+            <textarea
+              [id]="'observacion-' + devolucion.id"
+              [name]="'observacion-' + devolucion.id"
+              [(ngModel)]="observaciones[devolucion.id]"
+              [disabled]="
+                procesandoId !== null ||
+                devolucion.estado === 'COMPLETADA' ||
+                devolucion.estado === 'RECHAZADA'
+              "
+              rows="3"
+              placeholder="Registra el resultado de la revisión..."
+            ></textarea>
+
+            @if (devolucion.estado === 'EN_REVISION') {
+              <small>
+                La observación es obligatoria para rechazar una solicitud.
+              </small>
+            }
+
+          </div>
+
+          <!-- ACCIONES -->
+
+          <div class="actions">
+
+            @if (devolucion.estado === 'SOLICITADA') {
+
+              <button
+                type="button"
+                class="review"
+                [disabled]="procesandoId !== null"
+                (click)="cambiarEstado(devolucion, 'EN_REVISION')"
+              >
+                Iniciar revisión
+              </button>
+
+            }
+
+            @if (devolucion.estado === 'EN_REVISION') {
+
+              <button
+                type="button"
+                class="approve"
+                [disabled]="procesandoId !== null"
+                (click)="cambiarEstado(devolucion, 'APROBADA')"
+              >
+                Aprobar
+              </button>
+
+              <button
+                type="button"
+                class="reject"
+                [disabled]="procesandoId !== null"
+                (click)="cambiarEstado(devolucion, 'RECHAZADA')"
+              >
+                Rechazar
+              </button>
+
+            }
+
+            @if (devolucion.estado === 'APROBADA') {
+
+              <button
+                type="button"
+                class="complete"
+                [disabled]="procesandoId !== null"
+                (click)="cambiarEstado(devolucion, 'COMPLETADA')"
+              >
+                Completar devolución
+              </button>
+
+            }
+
+            @if (
+              devolucion.estado === 'RECHAZADA' ||
+              devolucion.estado === 'COMPLETADA'
+              ) {
+
+              <span class="finished-label">
+                Solicitud finalizada. No hay acciones disponibles.
+              </span>
+
+            }
+
+            @if (procesandoId === devolucion.id) {
+              <span class="processing">
+                Procesando...
+              </span>
+            }
+
+          </div>
+
+        </article>
+
+      } @empty {
+
+        <div class="empty-state">
+          No se encontraron solicitudes con los filtros seleccionados.
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</section>

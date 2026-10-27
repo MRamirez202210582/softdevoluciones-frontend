@@ -1,0 +1,14 @@
+<header class="header">
+  <a class="brand" routerLink="/client/dashboard">
+    ↩ Soft<span>Devoluciones</span>
+  </a>
+
+  <div class="user">
+    <div class="user-info">
+      <strong>{{ auth.usuario()?.nombre }}</strong>
+      <small>{{ auth.usuario()?.rol }}</small>
+    </div>
+
+    <button (click)="salir()">Cerrar sesión</button>
+  </div>
+</header>

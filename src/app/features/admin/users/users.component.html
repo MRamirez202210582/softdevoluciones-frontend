@@ -1,0 +1,201 @@
+
+<section class="admin-users">
+
+  <!-- ENCABEZADO -->
+  <div class="page-header">
+
+    <div>
+      <a
+        routerLink="/admin/dashboard"
+        class="back-link"
+      >
+        ← Volver al panel administrativo
+      </a>
+
+      <h1>Gestión de usuarios</h1>
+
+      <p class="subtitle">
+        Consulta las cuentas registradas y administra
+        los roles de acceso a SoftDevoluciones.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="cargando || usuarioActualizando !== null"
+      (click)="cargarUsuarios()"
+    >
+      {{ cargando ? 'Cargando...' : 'Actualizar' }}
+    </button>
+
+  </div>
+
+  <!-- MENSAJES -->
+  @if (error) {
+    <div class="alert error">
+      {{ error }}
+    </div>
+  }
+
+  @if (mensaje) {
+    <div class="alert success">
+      {{ mensaje }}
+    </div>
+  }
+
+  <!-- ESTADÍSTICAS -->
+  <div class="stats">
+
+    <article class="stat-card">
+      <span>Total de usuarios</span>
+      <strong>{{ totalUsuarios }}</strong>
+      <small>Cuentas registradas</small>
+    </article>
+
+    <article class="stat-card clients">
+      <span>Clientes</span>
+      <strong>{{ contarPorRol('CLIENTE') }}</strong>
+      <small>Usuarios compradores</small>
+    </article>
+
+    <article class="stat-card operators">
+      <span>Operadores</span>
+      <strong>{{ contarPorRol('OPERADOR') }}</strong>
+      <small>Gestión de devoluciones</small>
+    </article>
+
+    <article class="stat-card admins">
+      <span>Administradores</span>
+      <strong>{{ contarPorRol('ADMIN') }}</strong>
+      <small>Administración del sistema</small>
+    </article>
+
+  </div>
+
+  <!-- TABLA DE USUARIOS -->
+  <div class="users-card">
+
+    <div class="card-heading">
+      <div>
+        <h2>Usuarios registrados</h2>
+        <p>
+          Listado de cuentas obtenidas desde el backend.
+        </p>
+      </div>
+
+      <span class="total-label">
+        {{ totalUsuarios }} usuarios
+      </span>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Correo electrónico</th>
+          <th>Rol actual</th>
+          <th>Cambiar rol</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+          @for (
+              usuario of usuarios;
+            track usuario.id
+            ) {
+
+            <tr>
+
+              <td>
+                #{{ usuario.id }}
+              </td>
+
+              <td>
+                <strong class="user-name">
+                  {{ usuario.nombre }}
+                </strong>
+              </td>
+
+              <td>
+                {{ usuario.email }}
+              </td>
+
+              <td>
+                <span
+                  class="role-badge"
+                  [class.role-client]="usuario.rol === 'CLIENTE'"
+                  [class.role-operator]="usuario.rol === 'OPERADOR'"
+                  [class.role-admin]="usuario.rol === 'ADMIN'"
+                >
+                  {{ usuario.rol }}
+                </span>
+              </td>
+
+              <td>
+
+                <select
+                  class="role-select"
+                  [value]="usuario.rol"
+                  [disabled]="usuarioActualizando !== null"
+                  #rolSelect
+                  (change)="cambiarRol(
+                    usuario,
+                    $any(rolSelect.value)
+                  )"
+                >
+
+                  @for (rol of roles; track rol) {
+                    <option [value]="rol">
+                      {{ rol }}
+                    </option>
+                  }
+
+                </select>
+
+                @if (usuarioActualizando === usuario.id) {
+                  <span class="updating">
+                    Guardando...
+                  </span>
+                }
+
+              </td>
+
+            </tr>
+
+          } @empty {
+
+            <tr>
+              <td colspan="5" class="empty">
+
+                @if (cargando) {
+                  Cargando usuarios registrados...
+                } @else {
+                  No hay usuarios para mostrar.
+                }
+
+              </td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <p class="note">
+    Los cambios de rol se guardan en el backend.
+    Los permisos de acceso se aplican según el rol
+    asignado a cada usuario.
+  </p>
+
+</section>

@@ -1,0 +1,172 @@
+
+<section class="checkout-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Confirmar compra</h1>
+      <p>
+        Completa tus datos para registrar el pedido.
+      </p>
+    </div>
+
+    <a routerLink="/client/cart" class="back-link">
+      ← Volver al carrito
+    </a>
+  </div>
+
+  @if (error) {
+    <div class="alert-error">
+      {{ error }}
+    </div>
+  }
+
+  @if (cargando) {
+    <p>Cargando información del carrito...</p>
+  } @else if (carrito?.productos?.length) {
+
+    <div class="checkout-layout">
+
+      <form
+        class="checkout-form"
+        [formGroup]="formulario"
+        (ngSubmit)="confirmarCompra()"
+      >
+
+        <h2>Datos de entrega</h2>
+
+        <p class="form-description">
+          Ingresa la información correspondiente a tu pedido.
+        </p>
+
+        <div class="form-group">
+          <label for="clienteNombre">
+            Nombre completo
+          </label>
+
+          <input
+            id="clienteNombre"
+            type="text"
+            formControlName="clienteNombre"
+            placeholder="Ej. Juan Pérez"
+            autocomplete="name"
+          >
+
+          @if (nombreInvalido) {
+            <small class="field-error">
+              Ingresa un nombre de al menos 3 caracteres.
+            </small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="celular">
+            Número de celular
+          </label>
+
+          <input
+            id="celular"
+            type="tel"
+            formControlName="celular"
+            placeholder="987654321"
+            maxlength="9"
+            autocomplete="tel"
+          >
+
+          @if (celularInvalido) {
+            <small class="field-error">
+              Ingresa un número de 9 dígitos.
+            </small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="direccion">
+            Dirección de entrega
+          </label>
+
+          <textarea
+            id="direccion"
+            formControlName="direccion"
+            rows="4"
+            placeholder="Av. Principal 123, distrito, referencia..."
+            autocomplete="street-address"
+          ></textarea>
+
+          @if (direccionInvalida) {
+            <small class="field-error">
+              Ingresa una dirección válida.
+            </small>
+          }
+        </div>
+
+        <div class="form-actions">
+          <a routerLink="/client/cart" class="cancel-link">
+            Cancelar
+          </a>
+
+          <button
+            type="submit"
+            class="confirm-button"
+            [disabled]="procesando || formulario.invalid"
+          >
+            @if (procesando) {
+              Registrando pedido...
+            } @else {
+              Confirmar pedido
+            }
+          </button>
+        </div>
+
+      </form>
+
+      <aside class="order-summary">
+
+        <h2>Resumen del pedido</h2>
+
+        <div class="summary-products">
+          @for (item of carrito!.productos; track item.productoId) {
+            <div class="summary-product">
+
+              <div class="product-info">
+                <strong>{{ item.nombre }}</strong>
+                <small>Cantidad: {{ item.cantidad }}</small>
+              </div>
+
+              <strong class="product-price">
+                {{ item.subtotal | currency:'PEN':'symbol':'1.2-2' }}
+              </strong>
+
+            </div>
+          }
+        </div>
+
+        <div class="summary-total">
+          <span>Total estimado</span>
+          <strong>
+            {{ carrito!.total | currency:'PEN':'symbol':'1.2-2' }}
+          </strong>
+        </div>
+
+        <p class="summary-note">
+          El importe definitivo y la disponibilidad de productos
+          se validarán al registrar el pedido.
+        </p>
+
+      </aside>
+
+    </div>
+
+  } @else {
+
+    <div class="empty-checkout">
+      <h2>No hay productos para comprar</h2>
+      <p>Agrega productos al carrito antes de continuar.</p>
+
+      <a routerLink="/client/products" class="products-link">
+        Ir al catálogo
+      </a>
+    </div>
+
+  }
+
+</section>

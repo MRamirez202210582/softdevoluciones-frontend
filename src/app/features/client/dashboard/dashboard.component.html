@@ -1,0 +1,34 @@
+<section class="dashboard">
+  <h1>Bienvenido, {{ auth.usuario()?.nombre }}</h1>
+  <p>Gestiona tus pedidos y devoluciones desde un solo lugar.</p>
+
+  <div class="cards">
+    <a class="card" routerLink="/client/products">
+      <span class="icon">📦</span>
+      <h2>Productos</h2>
+      <p>Consulta el catálogo de productos.</p>
+      <span class="link">Ver productos →</span>
+    </a>
+
+    <a class="card" routerLink="/client/orders">
+      <span class="icon">🧾</span>
+      <h2>Mis pedidos</h2>
+      <p>Revisa las compras registradas.</p>
+      <span class="link">Ver pedidos →</span>
+    </a>
+
+    <a class="card" routerLink="/client/returns/new">
+      <span class="icon">↩️</span>
+      <h2>Solicitar devolución</h2>
+      <p>Solicita la devolución de productos comprados.</p>
+      <span class="link">Nueva solicitud →</span>
+    </a>
+
+    <a class="card" routerLink="/client/returns">
+      <span class="icon">📋</span>
+      <h2>Mis devoluciones</h2>
+      <p>Consulta el estado de tus solicitudes.</p>
+      <span class="link">Ver devoluciones →</span>
+    </a>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<div class="app-layout">
+  <app-header></app-header>
+
+  <div
+    class="layout-body"
+    [class.sin-sidebar]="auth.usuario()?.rol !== 'CLIENTE'"
+  >
+    @if (auth.usuario()?.rol === 'CLIENTE') {
+      <app-sidebar></app-sidebar>
+    }
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

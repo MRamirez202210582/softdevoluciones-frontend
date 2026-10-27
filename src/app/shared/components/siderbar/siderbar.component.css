@@ -1,0 +1,41 @@
+.sidebar {
+  width: 240px;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: #152641;
+  padding: 24px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-title {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 12px;
+  letter-spacing: 1px;
+}
+
+.sidebar a {
+  padding: 13px 16px;
+  color: #dbe7f8;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.sidebar a:hover {
+  background: #29466d;
+}
+
+.sidebar a.active {
+  background: #2563eb;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+}

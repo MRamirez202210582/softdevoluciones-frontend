@@ -1,0 +1,209 @@
+
+<section class="admin-dashboard">
+
+  <div class="page-header">
+    <div>
+      <h1>Panel administrativo</h1>
+      <p class="subtitle">
+        Supervisa las solicitudes de devolución y accede
+        a las funciones administrativas del sistema.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="cargando"
+      (click)="cargarEstadisticas()"
+    >
+      Actualizar
+    </button>
+  </div>
+
+  @if (error) {
+    <div class="alert error">
+      {{ error }}
+    </div>
+  }
+
+  @if (cargando) {
+    <p class="loading">
+      Cargando información administrativa...
+    </p>
+  }
+
+  <div class="section-heading">
+    <h2>Resumen general</h2>
+    <span>Supervisión de devoluciones</span>
+  </div>
+
+  <div class="stats">
+
+    <article class="stat-card">
+      <span>Total de solicitudes</span>
+      <strong>{{ total }}</strong>
+      <small>Total reportado por el backend</small>
+    </article>
+
+    <article class="stat-card pending">
+      <span>Pendientes de atención</span>
+      <strong>{{ solicitudesPendientes }}</strong>
+      <small>Solicitadas y en revisión</small>
+    </article>
+
+    <article class="stat-card approved">
+      <span>Aprobadas</span>
+      <strong>{{ contar('APROBADA') }}</strong>
+      <small>Pendientes de completar</small>
+    </article>
+
+    <article class="stat-card completed">
+      <span>Completadas</span>
+      <strong>{{ contar('COMPLETADA') }}</strong>
+      <small>Proceso finalizado</small>
+    </article>
+
+    <article class="stat-card rejected">
+      <span>Rechazadas</span>
+      <strong>{{ contar('RECHAZADA') }}</strong>
+      <small>Solicitudes no aprobadas</small>
+    </article>
+
+    <article class="stat-card amount">
+      <span>Importe de solicitudes cargadas</span>
+      <strong>
+        {{ totalImporte | currency:'PEN' }}
+      </strong>
+      <small>No representa pagos ni reembolsos realizados</small>
+    </article>
+
+  </div>
+
+  <div class="dashboard-grid">
+
+    <!-- ESTADO DE LAS SOLICITUDES -->
+    <article class="panel">
+
+      <div class="panel-heading">
+        <h2>Estado de las solicitudes</h2>
+        <p>Distribución de los registros cargados.</p>
+      </div>
+
+      <div class="status-list">
+
+        <div class="status-row">
+          <span>Solicitadas</span>
+          <strong>{{ contar('SOLICITADA') }}</strong>
+        </div>
+
+        <div class="status-row">
+          <span>En revisión</span>
+          <strong>{{ contar('EN_REVISION') }}</strong>
+        </div>
+
+        <div class="status-row">
+          <span>Aprobadas</span>
+          <strong>{{ contar('APROBADA') }}</strong>
+        </div>
+
+        <div class="status-row">
+          <span>Rechazadas</span>
+          <strong>{{ contar('RECHAZADA') }}</strong>
+        </div>
+
+        <div class="status-row">
+          <span>Completadas</span>
+          <strong>{{ contar('COMPLETADA') }}</strong>
+        </div>
+
+      </div>
+
+      <div class="progress-section">
+
+        <div class="progress-heading">
+          <span>Solicitudes finalizadas</span>
+          <strong>{{ porcentajeFinalizadas }}%</strong>
+        </div>
+
+        <div class="progress-track">
+          <div
+            class="progress-fill"
+            [style.width.%]="porcentajeFinalizadas"
+          ></div>
+        </div>
+
+      </div>
+
+    </article>
+
+    <!-- ACCESOS ADMINISTRATIVOS -->
+    <article class="panel">
+
+      <div class="panel-heading">
+        <h2>Accesos administrativos</h2>
+        <p>Herramientas de supervisión del sistema.</p>
+      </div>
+
+      <div class="management-links">
+
+        <!-- SUPERVISAR DEVOLUCIONES -->
+        <a
+          routerLink="/admin/returns"
+          class="management-link"
+        >
+          <div>
+            <strong>Supervisar devoluciones</strong>
+            <span>
+              Consultar todas las solicitudes de devolución
+              y supervisar sus estados.
+            </span>
+          </div>
+
+          <span class="arrow">→</span>
+        </a>
+
+        <!-- GESTIÓN DE USUARIOS -->
+        <a
+          routerLink="/admin/users"
+          class="management-link"
+        >
+          <div>
+            <strong>Gestión de usuarios</strong>
+            <span>
+              Consultar cuentas registradas y administrar
+              los roles de los usuarios.
+            </span>
+          </div>
+
+          <span class="arrow">→</span>
+        </a>
+
+        <!-- CONSULTA GLOBAL DE PEDIDOS -->
+        <a
+          routerLink="/admin/orders"
+          class="management-link"
+        >
+          <div>
+            <strong>Consulta global de pedidos</strong>
+            <span>
+              Supervisar las compras registradas,
+              sus productos y estados.
+            </span>
+          </div>
+
+          <span class="arrow">→</span>
+        </a>
+
+      </div>
+
+    </article>
+
+  </div>
+
+  <p class="note">
+    El total de solicitudes proviene del backend.
+    Los indicadores por estado, importes y porcentajes
+    se calculan sobre los primeros 50 registros obtenidos.
+  </p>
+
+</section>

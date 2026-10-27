@@ -1,0 +1,137 @@
+
+<section class="cart-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Mi carrito</h1>
+      <p>Revisa los productos antes de confirmar tu compra.</p>
+    </div>
+
+    <a routerLink="/client/products" class="back-link">
+      ← Seguir comprando
+    </a>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (mensaje) {
+    <p class="success">{{ mensaje }}</p>
+  }
+
+  @if (cargando) {
+    <p>Cargando carrito...</p>
+  } @else if (!carrito?.productos?.length) {
+
+    <div class="empty-cart">
+      <h2>Tu carrito está vacío</h2>
+      <p>Explora el catálogo y agrega algunos productos.</p>
+      <a routerLink="/client/products" class="primary-link">
+        Ver productos
+      </a>
+    </div>
+
+  } @else {
+
+    <div class="cart-layout">
+
+      <div class="cart-items">
+
+        @for (item of carrito!.productos; track item.productoId) {
+
+          <article class="cart-item">
+
+            <div class="product-image">
+              @if (item.imagenUrl) {
+                <img [src]="item.imagenUrl" [alt]="item.nombre">
+              } @else {
+                <span>📦</span>
+              }
+            </div>
+
+            <div class="product-info">
+              <h3>{{ item.nombre }}</h3>
+
+              <p>
+                Precio unitario:
+                {{ item.precio | currency:'PEN':'symbol':'1.2-2' }}
+              </p>
+
+              <div class="quantity-controls">
+                <button
+                  type="button"
+                  [disabled]="procesando || item.cantidad <= 1"
+                  (click)="cambiarCantidad(item, -1)"
+                >−</button>
+
+                <span>{{ item.cantidad }}</span>
+
+                <button
+                  type="button"
+                  [disabled]="procesando"
+                  (click)="cambiarCantidad(item, 1)"
+                >+</button>
+              </div>
+
+              <button
+                type="button"
+                class="remove-button"
+                [disabled]="procesando"
+                (click)="eliminarProducto(item)"
+              >
+                Eliminar
+              </button>
+            </div>
+
+            <strong class="subtotal">
+              {{ item.subtotal | currency:'PEN':'symbol':'1.2-2' }}
+            </strong>
+
+          </article>
+        }
+
+        <button
+          type="button"
+          class="clear-button"
+          [disabled]="procesando"
+          (click)="vaciarCarrito()"
+        >
+          Vaciar carrito
+        </button>
+
+      </div>
+
+      <aside class="order-summary">
+        <h2>Resumen de compra</h2>
+
+        <div class="summary-row">
+          <span>Productos</span>
+          <span>{{ carrito!.productos.length }}</span>
+        </div>
+
+        <div class="summary-row total">
+          <span>Total</span>
+          <strong>
+            {{ carrito!.total | currency:'PEN':'symbol':'1.2-2' }}
+          </strong>
+        </div>
+
+        <p class="summary-note">
+          El stock y los precios se validarán al confirmar el pedido.
+        </p>
+
+
+        <a
+          routerLink="/client/checkout"
+          class="checkout-button"
+        >
+          Continuar con la compra →
+        </a>
+
+      </aside>
+
+    </div>
+  }
+
+</section>

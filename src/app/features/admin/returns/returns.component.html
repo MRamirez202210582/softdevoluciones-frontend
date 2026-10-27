@@ -1,0 +1,57 @@
+
+<section class="admin-page">
+
+  <header class="page-header">
+    <div>
+      <a routerLink="/admin/dashboard" class="back-link">
+        ← Volver al panel
+      </a>
+      <h1>Supervisar devoluciones</h1>
+      <p>Consulta general de las solicitudes de devolución.</p>
+    </div>
+
+    <button (click)="cargar()" [disabled]="cargando">
+      Actualizar
+    </button>
+  </header>
+
+  @if (error) {
+    <div class="alert">{{ error }}</div>
+  }
+
+  <div class="summary">
+    <strong>{{ total }}</strong>
+    <span>Solicitudes registradas</span>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+      <tr>
+        <th>Solicitud</th>
+        <th>Compra</th>
+        <th>Estado</th>
+        <th>Importe</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (devolucion of devoluciones; track $index) {
+          <tr>
+            <td>#{{ devolucion.id }}</td>
+            <td>#{{ devolucion.compraId }}</td>
+            <td>
+              <span class="status">{{ devolucion.estado }}</span>
+            </td>
+            <td>{{ devolucion.importe | currency:'PEN' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty">
+              {{ cargando ? 'Cargando...' : 'No hay devoluciones.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

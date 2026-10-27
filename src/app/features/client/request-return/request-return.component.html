@@ -1,0 +1,77 @@
+<section class="return-page">
+  <h1>Solicitar devolución</h1>
+  <p class="subtitle">
+    Selecciona una compra existente y el producto que deseas devolver.
+  </p>
+
+  <form class="form-card" (ngSubmit)="solicitar()">
+    <label for="pedido">Pedido</label>
+    <select
+      id="pedido"
+      name="pedido"
+      [(ngModel)]="pedidoId"
+      (ngModelChange)="cambiarPedido()"
+      required
+    >
+      <option [ngValue]="0">Selecciona un pedido</option>
+      @for (pedido of pedidos; track pedido.id) {
+        <option [ngValue]="pedido.id">
+          Pedido #{{ pedido.id }} - {{ pedido.fecha }}
+        </option>
+      }
+    </select>
+
+    <label for="producto">Producto</label>
+    <select
+      id="producto"
+      name="producto"
+      [(ngModel)]="indiceDetalle"
+      required
+    >
+      <option [ngValue]="-1">Selecciona un producto</option>
+      @for (detalle of pedidoSeleccionado?.detalles || []; track $index) {
+        <option [ngValue]="$index">
+          {{ detalle.nombreProducto }} ({{ detalle.cantidad }} unidades)
+        </option>
+      }
+    </select>
+
+    <label for="cantidad">Cantidad a devolver</label>
+    <input
+      id="cantidad"
+      type="number"
+      name="cantidad"
+      [(ngModel)]="cantidad"
+      min="1"
+      [max]="detalleSeleccionado?.cantidad || 1"
+      required
+    >
+
+    <label for="motivo">Motivo</label>
+    <select id="motivo" name="motivo" [(ngModel)]="motivo">
+      <option value="PRODUCTO_DEFECTUOSO">Producto defectuoso</option>
+      <option value="PRODUCTO_INCORRECTO">Producto incorrecto</option>
+      <option value="PRODUCTO_DANADO">Producto dañado</option>
+      <option value="NO_CUMPLE_EXPECTATIVAS">No cumple expectativas</option>
+      <option value="OTRO">Otro</option>
+    </select>
+
+    <label for="comentario">Descripción del problema</label>
+    <textarea
+      id="comentario"
+      name="comentario"
+      [(ngModel)]="comentario"
+      rows="5"
+      placeholder="Explica por qué deseas devolver el producto..."
+      required
+    ></textarea>
+
+    @if (error) {
+      <p class="error">{{ error }}</p>
+    }
+
+    <button type="submit" [disabled]="enviando || cargando">
+      {{ enviando ? 'Enviando...' : 'Enviar solicitud' }}
+    </button>
+  </form>
+</section>

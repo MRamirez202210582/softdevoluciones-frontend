@@ -1,0 +1,40 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f3f6fb;
+}
+
+.layout-body {
+  display: flex;
+  flex: 1;
+}
+
+app-sidebar {
+  display: block;
+  background: #152641;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+}
+
+@media (max-width: 768px) {
+  .layout-body {
+    flex-direction: column;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+}
+.layout-body.sin-sidebar {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.layout-body.sin-sidebar .main-content {
+  width: 100%;
+  min-width: 0;
+}

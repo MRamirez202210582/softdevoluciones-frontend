@@ -1,0 +1,63 @@
+<section>
+  <h1>Mis pedidos</h1>
+  <p class="subtitle">Consulta tus compras y solicita devoluciones.</p>
+
+  @if (cargando) {
+    <p>Cargando pedidos...</p>
+  }
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @for (pedido of pedidos; track pedido.id) {
+    <article class="order-card">
+      <div class="order-header">
+        <div>
+          <h2>Pedido #{{ pedido.id }}</h2>
+          <p>{{ pedido.fecha | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <span class="status">{{ pedido.estado }}</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio unitario</th>
+            <th>Subtotal</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (detalle of pedido.detalles; track $index) {
+              <tr>
+                <td>{{ detalle.nombreProducto }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>{{ detalle.precioUnitario | currency:'PEN' }}</td>
+                <td>{{ detalle.subtotal | currency:'PEN' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="order-footer">
+        <strong>Total: {{ pedido.total | currency:'PEN' }}</strong>
+
+        <a
+          class="button"
+          routerLink="/client/returns/new"
+          [queryParams]="{ pedidoId: pedido.id }"
+        >
+          Solicitar devolución
+        </a>
+      </div>
+    </article>
+  } @empty {
+    @if (!cargando && !error) {
+      <p>No tienes pedidos registrados.</p>
+    }
+  }
+</section>

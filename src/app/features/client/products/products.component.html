@@ -1,0 +1,86 @@
+
+<section>
+  <div class="products-header">
+    <div>
+      <h1>Catálogo de productos</h1>
+      <p class="subtitle">
+        Explora nuestros productos y agrega los que desees comprar.
+      </p>
+    </div>
+
+    <a routerLink="/client/cart" class="cart-link">
+      🛒 Ver mi carrito
+    </a>
+  </div>
+
+  <div class="search">
+    <input
+      type="search"
+      placeholder="Buscar productos..."
+      [(ngModel)]="busqueda"
+    >
+  </div>
+
+  @if (mensaje) {
+    <p class="success">{{ mensaje }}</p>
+  }
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (cargando) {
+    <p>Cargando productos...</p>
+  }
+
+  <div class="products-grid">
+    @for (producto of productosFiltrados; track producto.id) {
+      <article class="product-card">
+        <div class="image-container">
+          @if (producto.imagenUrl) {
+            <img
+              [src]="producto.imagenUrl"
+              [alt]="producto.nombre"
+            >
+          } @else {
+            <span>📦</span>
+          }
+        </div>
+
+        <div class="details">
+          <h3>{{ producto.nombre }}</h3>
+          <p>{{ producto.descripcion }}</p>
+
+          <strong>
+            {{ producto.precio | currency:'PEN':'symbol':'1.2-2' }}
+          </strong>
+
+          <div class="stock">
+            Stock disponible: {{ producto.stock }}
+          </div>
+
+          <button
+            type="button"
+            class="add-button"
+            [disabled]="producto.stock <= 0 ||
+              producto.activo === false ||
+              procesandoId !== null"
+            (click)="agregarAlCarrito(producto)"
+          >
+            @if (procesandoId === producto.id) {
+              Agregando...
+            } @else if (producto.stock <= 0) {
+              Agotado
+            } @else {
+              Agregar al carrito
+            }
+          </button>
+        </div>
+      </article>
+    } @empty {
+      @if (!cargando && !error) {
+        <p>No se encontraron productos.</p>
+      }
+    }
+  </div>
+</section>
